@@ -1052,3 +1052,212 @@ int main() {
     return 0;
 }
 ```
+## 12/30/23
+- 高精度运算
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+#include <cstdlib>
+#include <algorithm>
+using namespace std;
+
+vector<int> add(vector<int> a, vector<int> b) {
+    vector<int> c;
+    int t = 0;
+    for(int i = 0;i < a.size() || i < b.size();i++) {
+        if(i < a.size()) t += a[i];
+        if(i < b.size()) t += b[i]; 
+        c.push_back(t % 10);
+        t /= 10;
+    }
+    if(t) c.push_back(t);
+    return c;
+}
+
+// >= return true; < return false
+bool cmp(vector<int> a,vector<int> b) {
+    if(a.size() != b.size()) return a.size() > b.size();
+    for(int i = a.size() - 1 ;i >= 0;i ++) {
+        if(a[i] != b[i]) return a[i] > b[i];
+    }
+    return true;
+}
+
+vector<int> minu(vector<int> a, vector<int> b) {
+    if(!cmp(a,b)) exit(1);
+    vector<int> c;
+    int t = 0;
+    for(int i = 0;i < a.size();i ++) {
+        t += a[i];
+        if(i < b.size()) t -= b[i];
+        c.push_back((t + 10) % 10);
+        if(t < 0) t = -1;
+        else t = 0;
+    }
+    while(c.size() > 1 && c.back() == 0) c.pop_back();
+    return c;
+}
+
+vector<int> mul(vector<int> a, int b) {
+    vector<int> c;
+    for(int i = 0, t = 0;i < a.size() || t;i ++) {
+        if(i < a.size()) t += a[i] * b;
+        c.push_back(t % 10);
+        t /= 10;
+    }
+    while(c.size() > 1 && c.back() == 0) c.pop_back();
+    return c;
+}
+
+vector<int> div(vector<int> a, int b) {
+    vector<int> c;
+    for(int i = a.size() - 1,t = 0;i >= 0;i --) {
+        t = 10 * t + a[i];
+        c.push_back(t / b);
+        t %= b;
+    }
+    reverse(c.begin(),c.end());
+    while(c.size() > 1 && c.back() == 0) c.pop_back();
+    return c;
+}
+
+int main() {
+    // string str_a,str_b;
+    // cin >> str_a >> str_b;
+    // vector<int> a,b;
+    // for(int i = str_a.size() - 1;i >= 0;i --) {
+    //     a.push_back(str_a[i] - '0');
+    // }
+    // for(int i = str_b.size() - 1;i >= 0;i --) {
+    //     b.push_back(str_b[i] - '0');
+    // }
+    string str_a;
+    int b;
+    cin >> str_a >> b;
+    vector<int> a;
+    for(int i = str_a.size() - 1;i >= 0;i --) {
+        a.push_back(str_a[i] - '0');
+    }
+    vector<int> c = div(a,b);
+    for(int i = c.size() - 1;i >= 0;i --) {
+        cout << c[i];
+    }
+    return 0;
+}
+```
+- 输入一个长度为n的整数序列。
+接下来再输入m个询问，每个询问输入一对l, r。
+对于每个询问，输出原序列中从第l个数到第r个数的和。
+```cpp
+const int N = 100010;
+
+int main() {
+    int n,m;
+    int q[N];
+    int l,r;
+    int sum[N];
+    cin >> n >> m;
+    for(int i = 0;i < n;i++) {
+        cin >> q[i];
+        if(i == 0) sum[i] = q[0];
+        else sum[i] = sum[i - 1] + q[i];
+    }
+    while(m--) {
+        cin >> l >> r;
+        cout << sum[r - 1] - sum[l - 2] << endl;
+    }
+    return 0;
+}
+```
+- 输入一个n行m列的整数矩阵，再输入q个询问，每个询问包含四个整数x1, y1, x2, y2，表示一个子矩阵的左上角坐标和右下角坐标。
+
+对于每个询问输出子矩阵中所有数的和。
+```cpp
+const int N = 1010;
+int n,m,q;
+int s[N][N];
+int x1,y1,x2,y2;
+int sum[N][N];
+
+int main() {
+    cin >> n >> m >> q;
+    for(int i = 1;i <= n;i ++) {
+        for(int j = 1;j <= m;j ++) {
+            cin >> s[i][j];
+            sum[i][j] = s[i][j] + sum[i][j - 1] + sum[i - 1][j] - sum[i - 1][j - 1];
+        }
+    }
+    while(q--) {
+        cin >> x1 >> y1 >> x2 >> y2;
+        cout << sum[x2][y2] - sum[x1 - 1][y2] - sum[x2][y1 - 1] + sum[x1 - 1][y1 - 1] << endl;
+    }
+    return 0;
+}
+```
+- 输入一个长度为n的整数序列。
+接下来输入m个操作，每个操作包含三个整数l, r, c，表示将序列中[l, r]之间的每个数加上c。
+请你输出进行完所有操作后的序列。
+```cpp
+const int N = 100010;
+int n,m,l,r,c;
+int q[N];
+int p[N];
+
+int main() {
+    cin >> n >> m;
+    for(int i = 1;i <= n;i ++) {
+        cin >> q[i];
+        p[i] = q[i] - q[i - 1];
+    }
+    while(m--) {
+        cin >> l >> r >> c;
+        p[l] += c;
+        p[r + 1] -= c;
+    }
+    for(int i = 1;i <= n;i ++) {
+        q[i] = p[i] + q[i - 1];
+        cout << q[i] << " ";
+    }
+    return 0;
+}
+```
+- 输入一个n行m列的整数矩阵，再输入q个操作，每个操作包含五个整数x1, y1, x2, y2, c，其中(x1, y1)和(x2, y2)表示一个子矩阵的左上角坐标和右下角坐标。
+每个操作都要将选中的子矩阵中的每个元素的值加上c。
+请你将进行完所有操作后的矩阵输出。
+```cpp
+const int N = 1010;
+int n,m,q;
+int a[N][N];
+int b[N][N];
+int x1,y1,x2,y2,c;
+
+void insert(int x1, int y1, int x2, int y2, int c) {
+    b[x1][y1] += c;
+    b[x2 + 1][y1] -= c;
+    b[x1][y2 + 1] -= c;
+    b[x2 + 1][y2 + 1] += c;
+}
+
+int main() {
+    cin >> n >> m >> q;
+    for(int i = 1;i <= n;i ++) {
+        for(int j = 1;j <= m;j ++) {
+            cin >> a[i][j];
+            insert(i,j,i,j,a[i][j]);
+        }
+    }
+    while(q--) {
+        cin >> x1 >> y1 >> x2 >> y2 >> c;
+        insert(x1,y1,x2,y2,c);
+    }
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= m; j++) {
+            a[i][j] = b[i][j] + a[i - 1][j] + a[i][j - 1] - a[i - 1][j - 1];
+            cout << a[i][j] << " ";
+        }
+        cout << '\n';
+    }
+    return 0;
+}
+```

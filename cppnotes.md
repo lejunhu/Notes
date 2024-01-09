@@ -702,6 +702,66 @@ void Printij(int i, int j) {
         }
     }
     ```
+## Wed 12/06/23
+- 二叉树的前中后序遍历
+```cpp
+    static int arr[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14};
+    /*
+              0
+        1          2
+     3    4      5    6
+    7 8 9 10 11 12 13 14
+    */
+
+    void PreOrder(int arr[], int n,int length) {
+        if(n > length - 1) {
+            return;
+        }
+        std::cout << arr[n] << " ";
+        PreOrder(arr,2*n+1,length);
+        PreOrder(arr,2*n+2,length);
+    }
+
+    void InOrder(int arr[], int n, int length) {
+        if(n > length - 1) {
+            return;
+        }
+        InOrder(arr,2*n+1,length);
+        std::cout << arr[n] << " ";
+        InOrder(arr,2*n+2,length);
+    }
+
+    void PostOrder(int arr[], int n, int length) {
+        if(n > length - 1) {
+            return;
+        }
+        PostOrder(arr,2*n+1,length);
+        PostOrder(arr,2*n+2,length);
+        std::cout << arr[n] << " ";
+    }
+```
+- 将二叉堆变为小顶堆
+```cpp
+    void MakeMinHeap(int arr[], int n) {
+        for(int i = n/2 - 1;i >= 0;i--) {
+            int j = 2*i + 1;
+            int temp = arr[i];
+            while(j < n) {
+                if(j + 1 < n && arr[j+1] < arr[j]) {
+                    j++;
+                }
+                if(arr[j] < temp) {
+                    arr[i] = arr[j];
+                    i = j;
+                    j = 2*i + 1;
+                }
+                else break;
+            }
+            arr[i] = temp;
+        }
+    }
+```
+
 ## Thu 12/07/23
 - 堆排序
 ```cpp

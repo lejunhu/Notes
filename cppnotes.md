@@ -867,28 +867,28 @@ void CountSort(int arr[], int n) {
 ```
 - 拓展：给定排序数组arr和整数k，不重复打印arr中所有相加和为k的严格升序的三元组
 ```cpp
-    void FindSum10_3d(int arr[], int length, int sum) {
-        for(int i = 0;i < length - 2;i++) {
-            int sumo2 = sum - arr[i];
-            int left = i+1;
-            int right = length-1;
-            while(left < right && arr[i] != arr[left]) {
-                if(arr[left] + arr[right] > sumo2) {
-                    right--;
+void FindSum10_3d(int arr[], int length, int sum) {
+    for(int i = 0;i < length - 2;i++) {
+        int sumo2 = sum - arr[i];
+        int left = i+1;
+        int right = length-1;
+        while(left < right && arr[i] != arr[left]) {
+            if(arr[left] + arr[right] > sumo2) {
+                right--;
+            }
+            else if(arr[left] + arr[right] < sumo2) {
+                left++;
+            }
+            else {
+                if(arr[left] != arr[left-1] && arr[right] != arr[right+1] && arr[left] != arr[right]) {
+                    std::cout << arr[i] << " " << arr[left] << " " << arr[right] << std::endl;
                 }
-                else if(arr[left] + arr[right] < sumo2) {
-                    left++;
-                }
-                else {
-                    if(arr[left] != arr[left-1] && arr[right] != arr[right+1] && arr[left] != arr[right]) {
-                        std::cout << arr[i] << " " << arr[left] << " " << arr[right] << std::endl;
-                    }
-                    left++;
-                    right--;
-                }
+                left++;
+                right--;
             }
         }
     }
+}
 ```
 - 给定一个无序数组arr,求出需要排序的最短子数组的长度
 ```cpp
@@ -1321,7 +1321,7 @@ int main() {
     return 0;
 }
 ```
-##01/25/24
+## 01/25/24
 - AcWing 846.树的重心(dfs)
 ```cpp
 #include<bits/stdc++.h>
@@ -1419,6 +1419,40 @@ int main() {
         add(a,b);
     }
     cout << bfs();
+    return 0;
+}
+```
+
+## 01/02/24
+- 最长连续不重复子序列
+```cpp
+#include <iostream>
+using namespace std;
+
+const int N = 1e5 + 10;
+
+int arr[N];
+
+int main() {
+    int n;
+    cin >> n;
+    for(int i = 0;i < n;i ++) {
+        cin >> arr[i];
+    }
+    int max_l = 1;
+    int l = 0;
+    int r = 1;
+    while(r < n) {
+        if(arr[r] != arr[r - 1] && r < n) r++;
+        else {
+            max_l = max(max_l,r - l);
+            l = r;
+            while(arr[l] == arr[l + 1] && l < n) l++;
+            r = l + 1;
+        }
+    }
+    max_l = max(max_l,r - l);
+    cout << max_l << endl;
     return 0;
 }
 ```

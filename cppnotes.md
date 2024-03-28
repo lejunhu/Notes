@@ -1321,3 +1321,104 @@ int main() {
     return 0;
 }
 ```
+##01/25/24
+- AcWing 846.树的重心(dfs)
+```cpp
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 10010;
+
+int idx,n,ans = N;
+int e[2*N],h[2*N],ne[2*N];
+bool st[N];
+
+void init() {
+    memset(h,-1,sizeof h);
+}
+
+void add(int a, int b) {
+    e[idx] = b;
+    ne[idx] = h[a];
+    h[a] = idx++;
+}
+
+int dfs(int u) {
+    st[u] = true;
+    int size = 0;
+    int sum = 1;
+    for(int i = h[u];i != -1;i = ne[i]) {
+        int j = e[i];
+        if(st[j]) continue;
+        int s = dfs(j);
+        size = max(s,size);
+        sum += s;
+    }
+    size = max(size,n - sum);
+    ans = min(ans,size);
+    return sum;
+}
+
+int main() {
+    cin >> n;
+    init();
+    int a,b;
+    for(int i = 0;i < n;i ++) {
+        cin >> a >> b;
+        add(a,b);
+        add(b,a);
+    }
+    dfs(1);
+    cout << ans;
+    return 0;
+}
+```
+## 01/26/24
+- AcWing 847(bfs)
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+const int N = 10010;
+
+int n,m,idx;
+int e[N],ne[N],h[N],q[N],d[N];
+
+void add(int a, int b) {
+    e[idx] = b;
+    ne[idx] = h[a];
+    h[a] = idx++;
+}
+
+int bfs() {
+    int hh = 0;
+    int tt = 0;
+    q[0] = 1;
+    d[1] = 0;
+    while(hh <= tt) {
+        int u = q[hh++];
+        if(u == n) return d[n];
+        for(int i = h[u];i != -1;i = ne[i]) {
+            int j = e[i];
+            if(d[j] == -1) {
+                d[j] = d[u] + 1;
+                q[++tt] = j;
+            }
+        }
+        return d[n];
+    }
+}
+
+int main() {
+    cin >> n >> m;
+    int a,b;
+    memset(h,-1,sizeof h);
+    memset(d,-1,sizeof d);
+    while(m--) {
+        cin >> a >> b;
+        add(a,b);
+    }
+    cout << bfs();
+    return 0;
+}
+```
